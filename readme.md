@@ -37,6 +37,7 @@ To build Docker images for each component, run the following commands from the r
 
 ### Running Containers
 Run the containers for each component:
+
 	`docker run -d --name origin_server -p 5000:5000 -p 8468:8468 origin_server_image`  
 	`docker run -d --name surrogate_server -p 5001:5001 -p 8469:8469 surrogate_server_image` 
 	`docker run -it --name client_app client_app_image` 
