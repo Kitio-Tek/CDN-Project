@@ -29,7 +29,7 @@ This project implements a simple Content Delivery Network (CDN) using Python and
 **Tests:** Validates the LRU Cache functionality.
 
 ## Getting Started
-	To build Docker images for each component, run the following commands from the root directory of the project:
+To build Docker images for each component, run the following commands from the root directory of the project:
 
 	`docker build -t origin_server_image ./origin_server`  
 	`docker build -t surrogate_server_image ./surrogate_servers`  
