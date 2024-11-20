@@ -24,6 +24,7 @@ This project implements a simple Content Delivery Network (CDN) using Python and
 **Origin Server**: Stores original content and manages distribution using a Distributed Hash Table (DHT).
 
 **Surrogate Servers**: Cache content from the Origin Server and serve it to clients using an LRU Cache for efficient storage management.
+
 **Client Application:** Requests content from Surrogate Servers and plays it using VLC.
 **Tests:** Validates the LRU Cache functionality.
 
