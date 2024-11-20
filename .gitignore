@@ -1,4 +1,6 @@
 .DS_Store
 venv
+
 surrogate/cache/*
+surrogate/cache_index.json
 !surrogate/cache/.gitkeep
