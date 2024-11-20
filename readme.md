@@ -22,6 +22,7 @@
 This project implements a simple Content Delivery Network (CDN) using Python and Flask. It consists of:
 
 **Origin Server**: Stores original content and manages distribution using a Distributed Hash Table (DHT).
+
 **Surrogate Servers**: Cache content from the Origin Server and serve it to clients using an LRU Cache for efficient storage management.
 **Client Application:** Requests content from Surrogate Servers and plays it using VLC.
 **Tests:** Validates the LRU Cache functionality.
@@ -43,7 +44,7 @@ This project implements a simple Content Delivery Network (CDN) using Python and
 	`ffmpeg -f lavfi -i testsrc=duration=10:size=640x360:rate=30 sample_video.mp4`  
 
 	Upload the File Using curl:
-	`fcurl -X POST -F "content_id=sample_video.mp4" -F "file=@sample_video.mp4" http://localhost:5000/upload`  
+	`curl -X POST -F "content_id=sample_video.mp4" -F "file=@sample_video.mp4" http://localhost:5000/upload`  
 
 
 
