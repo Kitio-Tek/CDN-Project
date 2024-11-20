@@ -1,6 +1,31 @@
+# Ignore system files
 .DS_Store
-venv
 
-surrogate/cache/*
-surrogate/cache_index.json
-!surrogate/cache/.gitkeep
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore virtual environment folders
+venv/
+env/
+
+# Ignore log files
+*.log
+output.log
+
+# Ignore sample videos
+*.mp4
+
+# Ignore client app's unnecessary files
+client_app/sample_video.mp4
+client_app/downloaded_content/
+
+# Ignore content folder in origin server
+origin_server/content/
+
+# Ignore surrogate servers' unnecessary files
+surrogate_servers/cache/*
+!surrogate_servers/cache/.gitkeep
+
+# VSCode settings
+.vscode/

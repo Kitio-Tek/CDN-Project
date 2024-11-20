@@ -1,0 +1,4 @@
+# origin_server/requirements.txt
+Flask==3.1.0
+kademlia==2.2.2
+requests==2.31.0

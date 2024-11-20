@@ -1,0 +1,3 @@
+# client_app/requirements.txt
+requests==2.31.0
+python-vlc==3.0.18121
