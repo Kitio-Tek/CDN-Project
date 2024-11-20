@@ -47,6 +47,7 @@ Run the containers for each component:
 	`ffmpeg -f lavfi -i testsrc=duration=10:size=640x360:rate=30 sample_video.mp4`  
 
 Upload the File Using curl:
+
 	`curl -X POST -F "content_id=sample_video.mp4" -F "file=@sample_video.mp4" http://localhost:5000/upload`  
 
 
