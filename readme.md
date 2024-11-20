@@ -6,7 +6,10 @@
 
 ## Diagram
 ![Diagram](diagram.png)  
-For routers, each color corresponds to an AS.
+For routers, each color corresponds to an AS.  
+- blue = 64001
+- yellow = 64002
+- red = 64003
 ## Choices
 **- User/CDN communication:** BGP Anycast
 
