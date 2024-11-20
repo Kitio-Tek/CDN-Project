@@ -36,7 +36,7 @@ To build Docker images for each component, run the following commands from the r
 	`docker build -t client_app_image ./client_app`
 
 ### Running Containers
-	Run the containers for each component:
+Run the containers for each component:
 	`docker run -d --name origin_server -p 5000:5000 -p 8468:8468 origin_server_image`  
 	`docker run -d --name surrogate_server -p 5001:5001 -p 8469:8469 surrogate_server_image` 
 	`docker run -it --name client_app client_app_image` 
@@ -44,7 +44,7 @@ To build Docker images for each component, run the following commands from the r
 ### Uploading Content to the Origin Server
 	`ffmpeg -f lavfi -i testsrc=duration=10:size=640x360:rate=30 sample_video.mp4`  
 
-	Upload the File Using curl:
+Upload the File Using curl:
 	`curl -X POST -F "content_id=sample_video.mp4" -F "file=@sample_video.mp4" http://localhost:5000/upload`  
 
 
