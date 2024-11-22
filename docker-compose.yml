@@ -1,0 +1,31 @@
+name: cdn
+
+services:
+  origin:
+    build: ./origin
+    ports:
+      - "5001:5000"
+    networks:
+      default:
+        ipv4_address: 1.1.2.1
+    volumes:
+    - ./origin:/app
+
+  surrogate:
+    build: ./surrogate
+    ports:
+      - "5000:5000"
+    depends_on:
+      - origin
+    networks:
+      default:
+        ipv4_address: 1.1.1.1
+    volumes:
+    - ./surrogate:/app
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 1.1.0.0/16
+      

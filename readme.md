@@ -19,10 +19,13 @@
 
 **- File size:** 1MB
 
-## Run servers
-### Surrogates
-`cd surrogate`  
-`docker build -t cdn-surrogate:latest .`  
-`docker run -d --name cdn-surrogate -p 5000:5000 cdn-surrogate`
-### Origin
-TO DO
+## Test servers in development environment
+Run origin & surrogate servers with `docker compose up -d`  
+- You can try surrogates servers with a GET request at `localhost:5000/download/<filename>` 
+
+- You can try surrogates servers with a GET request at `localhost:5001/<filename>`
+
+## Production environment
+Build images with :
+- `docker build -t cdn-surrogate:latest surrogate`
+- `docker build -t cdn-origin:latest origin`

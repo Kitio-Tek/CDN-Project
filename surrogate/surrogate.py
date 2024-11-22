@@ -1,13 +1,12 @@
 from flask import Flask, send_file
 import os
-import io
 import json
 from typing import List, Dict
 import time
+import requests
 
 cache_limit = 3 * 2**20  # 3MB
-origin_directory = "origin"
-# origin_ip = "http://localhost:5000"
+origin_url = "http://1.1.2.1:5000"
 cache_directory = "cache"
 cache_index_stored = "cache_index.json"
 cache_index: Dict[str, List[Dict]] = {}
@@ -42,27 +41,21 @@ def create_cache_index() -> None:
         save_cache_index()
 
 
-def get_file_from_origin(filename) -> io.BytesIO:
-    # to change if origin is remote
-    file_path = os.path.join(origin_directory, filename)
-    if not os.path.exists(file_path):
+def get_file_from_origin(filename) -> bytes:
+    res = requests.get(f"{origin_url}/{filename}")
+    if res.status_code == 404:
         raise FileNotFoundError
-    bytes = None
-    with open(file_path, "rb") as f:
-        bytes = f.read()
-        f.seek(0)
-    return bytes
+    return res.content
 
 
-def get_file_from_cache(filename) -> io.BytesIO | None:
+def get_file_from_cache(filename) -> bytes | None:
     file_path = os.path.join(cache_directory, filename)
-    bytes = None
-    if not os.path.exists(file_path):
-        return bytes
-    with open(file_path, "rb") as f:
-        bytes = f.read()
-        f.seek(0)
-    return bytes
+    file = None
+    if os.path.exists(file_path):
+        with open(file_path, "rb") as f:
+            file = f.read()
+            f.seek(0)
+    return file
 
 
 def get_cache_current_size() -> int:
@@ -103,25 +96,27 @@ def download(filename):
             0,
         )
         path_in_cache = os.path.join(cache_directory, filename)
-        bytes: io.BytesIO = get_file_from_cache(filename)
+        file_bytes: bytes = get_file_from_cache(filename)
 
-        is_from_origin = bytes is None
+        is_from_origin = file_bytes is None
         if is_from_origin:
-            bytes = get_file_from_origin(filename)
+            file_bytes = get_file_from_origin(filename)
 
-            if len(bytes) > cache_limit:
+            if len(file_bytes) > cache_limit:
                 return "File too big", 400
 
             # Last recently used
-            cache_is_full: bool = get_cache_current_size() + len(bytes) > cache_limit
+            cache_is_full: bool = (
+                get_cache_current_size() + len(file_bytes) > cache_limit
+            )
             while cache_is_full:
                 file_to_remove = cache_index["files"].pop()
                 os.remove(os.path.join(cache_directory, file_to_remove["name"]))
-                cache_is_full = get_cache_current_size() + len(bytes) > cache_limit
+                cache_is_full = get_cache_current_size() + len(file_bytes) > cache_limit
 
             # Save file in cache
             with open(path_in_cache, "wb") as f:
-                f.write(bytes)
+                f.write(file_bytes)
             add_file_in_cache_index({"name": filename, "last_used": int(time.time())})
 
         else:
