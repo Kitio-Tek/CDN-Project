@@ -4,9 +4,23 @@ import json
 from typing import List, Dict
 import time
 import requests
+from requests_toolbelt.adapters import source
+import sys
+import re
+
+
+motif = r"^(\d{1,3}\.){3}\d{1,3}:\d{1,5}$"
+if len(sys.argv) < 3:
+    print("Usage: python surrogate.py <address:port> <origin_ip:port>")
+    sys.exit(1)
+if not re.match(motif, sys.argv[1]) or not re.match(motif, sys.argv[2]):
+    print("Invalid address format")
+    sys.exit(1)
 
 cache_limit = 3 * 2**20  # 3MB
-origin_url = "http://1.1.2.1:5000"
+surrogate_address = sys.argv[1].split(":")[0]
+surrogate_port = int(sys.argv[1].split(":")[1])
+origin_url = "http://" + sys.argv[2]
 cache_directory = "cache"
 cache_index_stored = "cache_index.json"
 cache_index: Dict[str, List[Dict]] = {}
@@ -42,7 +56,10 @@ def create_cache_index() -> None:
 
 
 def get_file_from_origin(filename) -> bytes:
-    res = requests.get(f"{origin_url}/{filename}")
+    src = source.SourceAddressAdapter(surrogate_address)
+    with requests.Session() as session:
+        session.mount("http://", src)
+        res = session.get(f"{origin_url}/{filename}")
     if res.status_code == 404:
         raise FileNotFoundError
     return res.content
@@ -134,4 +151,4 @@ def download(filename):
 
 if __name__ == "__main__":
     create_cache_index()
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", port=surrogate_port, debug=True)
