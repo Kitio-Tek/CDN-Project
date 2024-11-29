@@ -1,4 +1,5 @@
 # client_app/Dockerfile
+
 # Use Python 3.13-slim image
 FROM python:3.13-slim
 
@@ -11,6 +12,5 @@ RUN apt-get update && \
 
 COPY . .
 
-# No ports to expose for client_app unless required
-
-CMD ["python3", "request_content.py"]
+# Run the script and then start a shell to keep the container running
+CMD ["bash", "-c", "python3 request_content.py && exec bash"]

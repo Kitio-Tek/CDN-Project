@@ -24,6 +24,6 @@ def request_content(surrogate_server_url, content_id, save_path='downloaded_cont
         print(f"Request failed: {e}")
 
 if __name__ == "__main__":
-    SURROGATE_SERVER_URL = 'http://localhost:5001'  # Surrogate Server URL
+    SURROGATE_SERVER_URL = 'http://cdn-surrogate:5001'  # Surrogate Server URL
     CONTENT_ID = 'sample_video.mp4'  # Content ID to request
     request_content(SURROGATE_SERVER_URL, CONTENT_ID)

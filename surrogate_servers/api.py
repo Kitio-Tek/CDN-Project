@@ -17,7 +17,7 @@ CACHE_DIR = 'cache'
 os.makedirs(CACHE_DIR, exist_ok=True)
 
 # Origin Server URL
-ORIGIN_SERVER_URL = 'http://localhost:5000'
+ORIGIN_SERVER_URL = 'http://cdn-origin:5000'
 
 # Initialize DHT server
 loop = asyncio.new_event_loop()
@@ -26,7 +26,7 @@ dht_server = Server()
 
 async def start_dht_node():
     await dht_server.listen(8469)
-    await dht_server.bootstrap([('127.0.0.1', 8468)])  # Bootstrap with Origin Server DHT node
+    await dht_server.bootstrap([('cdn-origin', 8468)])  # Bootstrap with Origin Server DHT node
 
 loop.run_until_complete(start_dht_node())
 
