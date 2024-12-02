@@ -9,18 +9,18 @@ import sys
 import re
 
 
-motif = r"^(\d{1,3}\.){3}\d{1,3}:\d{1,5}$"
-if len(sys.argv) < 3:
-    print("Usage: python surrogate.py <address:port> <origin_ip:port>")
+motif = r"^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$"
+if len(sys.argv) != 2:
+    print("Usage: python surrogate.py <surrogate_unicast_address>")
     sys.exit(1)
-if not re.match(motif, sys.argv[1]) or not re.match(motif, sys.argv[2]):
-    print("Invalid address format")
+if not re.match(motif, sys.argv[1]):
+    print("Invalid IP address format")
     sys.exit(1)
 
-cache_limit = 3 * 2**20  # 3MB
-surrogate_address = sys.argv[1].split(":")[0]
-surrogate_port = int(sys.argv[1].split(":")[1])
-origin_url = "http://" + sys.argv[2]
+origin_url = "1.1.2.1"
+surrogate_address = sys.argv[1]
+surrogate_port = 5000
+cache_limit = 5 * 2**10  # 5kB
 cache_directory = "cache"
 cache_index_stored = "cache_index.json"
 cache_index: Dict[str, List[Dict]] = {}

@@ -15,17 +15,15 @@
 
 **- Cache management strategy:** The Least Recently Used (LRU)  
 
-**- Cache size:** 3MB in each surrogate server  
+**- Cache size:** 5kB in each surrogate server  
 
-**- File size:** 1MB
+**- File size:** 1kB
 
-## Test servers in development environment
-Run origin & surrogate servers with `docker compose up -d`  
-- You can try surrogates servers with a GET request at `localhost:5000/download/<filename>` 
-
-- You can try surrogates servers with a GET request at `localhost:5001/<filename>`
-
-## Production environment
+## GNS3 environment
 Build images with :
 - `docker build -t cdn-surrogate:latest surrogate`
-- `docker build -t cdn-origin:latest origin`
+- `docker build -t cdn-origin:latest origin`  
+- `docker build -t cdn-client:latest client`  
+
+Get inside the surrogate containers and run :  
+`python surrogate.py <surrogate_unicast_address>`
