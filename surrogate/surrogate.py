@@ -17,7 +17,7 @@ if not re.match(motif, sys.argv[1]):
     print("Invalid IP address format")
     sys.exit(1)
 
-origin_url = "1.1.2.1"
+origin_url = "http://1.1.2.1:5000"
 surrogate_address = sys.argv[1]
 surrogate_port = 5000
 cache_limit = 5 * 2**10  # 5kB
