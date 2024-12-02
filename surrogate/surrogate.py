@@ -46,7 +46,7 @@ def create_cache_index() -> None:
             for file in cache_index["files"]
             if os.path.exists(os.path.join(cache_directory, file["name"]))
         ]
-        # Sort files by last used
+        # Sort files from most used to least used
         cache_index["files"] = sorted(
             cache_index["files"], key=lambda file: file["last_used"], reverse=True
         )
@@ -55,7 +55,7 @@ def create_cache_index() -> None:
         save_cache_index()
 
 
-def get_file_from_origin(filename) -> bytes:
+def get_file_from_origin(filename: str) -> bytes:
     src = source.SourceAddressAdapter(surrogate_address)
     with requests.Session() as session:
         session.mount("http://", src)
@@ -65,7 +65,7 @@ def get_file_from_origin(filename) -> bytes:
     return res.content
 
 
-def get_file_from_cache(filename) -> bytes | None:
+def get_file_from_cache(filename: str) -> bytes | None:
     file_path = os.path.join(cache_directory, filename)
     file = None
     if os.path.exists(file_path):
@@ -100,7 +100,7 @@ app = Flask(__name__)
 
 
 @app.route("/download/<filename>")
-def download(filename):
+def download(filename: str):
     global cache_index
 
     try:
@@ -122,7 +122,7 @@ def download(filename):
             if len(file_bytes) > cache_limit:
                 return "File too big", 400
 
-            # Last recently used
+            # Least recently used
             cache_is_full: bool = (
                 get_cache_current_size() + len(file_bytes) > cache_limit
             )
