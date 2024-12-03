@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN apk add build-base
+
 # Install Python 3
 RUN apk add --update --no-cache python3
 
