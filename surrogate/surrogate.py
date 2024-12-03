@@ -5,13 +5,21 @@ from typing import List, Dict
 import time
 import requests
 from requests_toolbelt.adapters import source
-import sys
-import re
-import netifaces as ni
+import socket
+import fcntl
+import struct
+
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])
 
 
 origin_url = "http://1.1.2.1:5000"
-surrogate_address = ni.ifaddresses('eth1')[ni.AF_INET][0]['addr']
+surrogate_address = get_ip_address('eth1')
 surrogate_port = 5000
 cache_limit = 5 * 2**10  # 5kB
 cache_directory = "cache"
