@@ -7,18 +7,11 @@ import requests
 from requests_toolbelt.adapters import source
 import sys
 import re
+import netifaces as ni
 
-
-motif = r"^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$"
-if len(sys.argv) != 2:
-    print("Usage: python surrogate.py <surrogate_unicast_address>")
-    sys.exit(1)
-if not re.match(motif, sys.argv[1]):
-    print("Invalid IP address format")
-    sys.exit(1)
 
 origin_url = "http://1.1.2.1:5000"
-surrogate_address = sys.argv[1]
+surrogate_address = ni.ifaddresses('eth1')[ni.AF_INET][0]['addr']
 surrogate_port = 5000
 cache_limit = 5 * 2**10  # 5kB
 cache_directory = "cache"

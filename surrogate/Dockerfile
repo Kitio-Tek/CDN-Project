@@ -14,3 +14,5 @@ RUN mv /usr/lib/python3.12/EXTERNALLY-MANAGED /usr/lib/python3.12/EXTERNALLY-MAN
 RUN pip3 install -r requirements.txt
 
 EXPOSE 5000
+
+CMD ["python", "surrogate.py"]

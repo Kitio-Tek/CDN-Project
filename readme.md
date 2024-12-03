@@ -27,3 +27,16 @@ Build images with :
 
 Get inside the surrogate containers and run :  
 `python surrogate.py <surrogate_unicast_address>`
+
+
+# Suite
+Initalement, l'origin possède TOUS les fichiers
+on lance origin => il envoie des GET a tous les surrogate pr être surs qu'ils sont en vie
+on lance les surrogate (ils vident leur dossier files pr laisser l'origin redistribuer) => tous les GET se valident => tous les surrogate sont enregistré dans le digest de l'origin
+l'origin distribue les fichiers EQUITABLEMENT et enregistre dans son digest le mapping fichier <=> surrogate unicast address
+(distribuer => transmettre aux surrogate ET supprimer dans son stockage local)
+
+Requete client vers un surrogate:
+- si fichier dans cache => reception par le client
+- sinon cache MISS => GET vers 
+
