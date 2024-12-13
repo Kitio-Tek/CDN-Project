@@ -1,4 +1,4 @@
-from flask import Flask, send_file
+from flask import Flask, send_file, request
 import os
 import json
 from typing import List, Dict
@@ -104,7 +104,7 @@ def update_file_in_cache_index(index: int) -> None:
 app = Flask(__name__)
 
 
-@app.route("/download/<filename>")
+@app.route("/<filename>", methods=["GET"])
 def download(filename: str):
     global cache_index
 
@@ -154,8 +154,12 @@ def download(filename: str):
         return "Internal server error", 500
 
 
-@app.route("/download/<filename>")
-def remove_from_origin(filename: str):
+@app.route("/<filename>", methods=["DELETE"])
+def delete_from_cache(filename: str):
+    headers = request.headers
+    if headers.get("Authorization") != "Bearer admin":
+        return "Unauthorized", 401
+
     global cache_index
     try:
         index = next(
