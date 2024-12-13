@@ -25,8 +25,15 @@ Build images with :
 - `docker build -t cdn-origin:latest origin`  
 - `docker build -t cdn-client:latest client`  
 
-Get inside the surrogate containers and run :  
-`python surrogate.py <surrogate_unicast_address>`
+## Surrogate routes
+
+```
+GET http://1.1.1.1:5000/<filename>
+```
+```
+DELETE http://1.1.1.1:5000/<filename>
+Authorization: Bearer admin
+```
 
 
 # Suite
