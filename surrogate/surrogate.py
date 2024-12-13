@@ -9,17 +9,20 @@ import socket
 import fcntl
 import struct
 
-def get_ip_address(ifname):
+
+def get_ip_address(ifname: str) -> str:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    return socket.inet_ntoa(fcntl.ioctl(
-        s.fileno(),
-        0x8915,  # SIOCGIFADDR
-        struct.pack('256s', bytes(ifname[:15], 'utf-8'))
-    )[20:24])
+    return socket.inet_ntoa(
+        fcntl.ioctl(
+            s.fileno(),
+            0x8915,  # SIOCGIFADDR
+            struct.pack("256s", bytes(ifname[:15], "utf-8")),
+        )[20:24]
+    )
 
 
 origin_url = "http://1.1.2.1:5000"
-surrogate_address = get_ip_address('eth1')
+surrogate_unicast_address = get_ip_address("eth1")
 surrogate_port = 5000
 cache_limit = 5 * 2**10  # 5kB
 cache_directory = "cache"
@@ -57,7 +60,7 @@ def create_cache_index() -> None:
 
 
 def get_file_from_origin(filename: str) -> bytes:
-    src = source.SourceAddressAdapter(surrogate_address)
+    src = source.SourceAddressAdapter(surrogate_unicast_address)
     with requests.Session() as session:
         session.mount("http://", src)
         res = session.get(f"{origin_url}/{filename}")
@@ -83,8 +86,9 @@ def get_cache_current_size() -> int:
     return cache_size
 
 
-def add_file_in_cache_index(file: Dict) -> None:
+def add_file_in_cache_index(filename: str) -> None:
     global cache_index
+    file = {"name": filename, "last_used": int(time.time())}
     cache_index["files"].insert(0, file)
     save_cache_index()
 
@@ -116,8 +120,8 @@ def download(filename: str):
         path_in_cache = os.path.join(cache_directory, filename)
         file_bytes: bytes = get_file_from_cache(filename)
 
-        is_from_origin = file_bytes is None
-        if is_from_origin:
+        cache_miss = file_bytes is None
+        if cache_miss:
             file_bytes = get_file_from_origin(filename)
 
             if len(file_bytes) > cache_limit:
@@ -135,7 +139,7 @@ def download(filename: str):
             # Save file in cache
             with open(path_in_cache, "wb") as f:
                 f.write(file_bytes)
-            add_file_in_cache_index({"name": filename, "last_used": int(time.time())})
+            add_file_in_cache_index(filename)
 
         else:
             update_file_in_cache_index(index)
@@ -144,6 +148,39 @@ def download(filename: str):
 
     except FileNotFoundError:
         return "File not found", 404
+
+    except Exception as e:
+        print(e)
+        return "Internal server error", 500
+
+
+@app.route("/download/<filename>")
+def remove_from_origin(filename: str):
+    global cache_index
+    try:
+        index = next(
+            (
+                i
+                for i, file in enumerate(cache_index["files"])
+                if file.get("name", False) == filename
+            ),
+            None,
+        )
+
+        # Remove file from cache index
+        if index is not None:
+            cache_index["files"].pop(index)
+            cache_index["files"] = sorted(
+                cache_index["files"], key=lambda file: file["last_used"], reverse=True
+            )
+            save_cache_index()
+
+        # Remove file from cache
+        if not os.path.exists(os.path.join(cache_directory, filename)):
+            return "File not found", 404
+        os.remove(os.path.join(cache_directory, filename))
+
+        return "File removed", 200
 
     except Exception as e:
         print(e)
